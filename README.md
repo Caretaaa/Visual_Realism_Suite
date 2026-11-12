@@ -1,4 +1,6 @@
-# 3D Visual Realism Suite
+# Visual_Realism_Suite
+
+3D Visual Realism Suite
 
 Standalone Java 17 / LWJGL 3 / OpenGL 3.3 sample implementing the five indicators in the Week 11 module. It creates a UV sphere and ground plane, switches Phong/Blinn-Phong and flat/smooth normals, exposes depth and culling toggles, samples a PNG texture with selectable filtering, and renders a depth shadow map in two passes.
 
