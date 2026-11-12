@@ -1,0 +1,9 @@
+package com.grafkom.viewing3d;
+import java.nio.*;import static org.lwjgl.opengl.GL30.*;import static org.lwjgl.opengl.GL15.*;import static org.lwjgl.opengl.GL11.*;import static org.lwjgl.opengl.GL20.*;
+public final class Mesh {
+ private final int vao,vbo,ebo,count;
+ public Mesh(float[] data,int[] indices){count=indices.length;vao=glGenVertexArrays();vbo=glGenBuffers();ebo=glGenBuffers();glBindVertexArray(vao);glBindBuffer(GL_ARRAY_BUFFER,vbo);glBufferData(GL_ARRAY_BUFFER,data,GL_STATIC_DRAW);glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ebo);glBufferData(GL_ELEMENT_ARRAY_BUFFER,indices,GL_STATIC_DRAW);int stride=8*Float.BYTES;glVertexAttribPointer(0,3,GL_FLOAT,false,stride,0);glEnableVertexAttribArray(0);glVertexAttribPointer(1,3,GL_FLOAT,false,stride,3L*Float.BYTES);glEnableVertexAttribArray(1);glVertexAttribPointer(2,2,GL_FLOAT,false,stride,6L*Float.BYTES);glEnableVertexAttribArray(2);glBindVertexArray(0);}
+ public void draw(){glBindVertexArray(vao);glDrawElements(GL_TRIANGLES,count,GL_UNSIGNED_INT,0);glBindVertexArray(0);}
+ public static Mesh sphere(int stacks,int slices){FloatBuffer b=ByteBuffer.allocateDirect((stacks+1)*(slices+1)*8*4).order(ByteOrder.nativeOrder()).asFloatBuffer();for(int y=0;y<=stacks;y++){double v=(double)y/stacks,phi=Math.PI*v;for(int x=0;x<=slices;x++){double u=(double)x/slices,theta=2*Math.PI*u;float nx=(float)(Math.sin(phi)*Math.cos(theta)),ny=(float)Math.cos(phi),nz=(float)(Math.sin(phi)*Math.sin(theta));b.put(nx).put(ny).put(nz).put(nx).put(ny).put(nz).put((float)u).put((float)v);}}float[] d=new float[b.position()];b.flip();b.get(d);int[] ix=new int[stacks*slices*6];int k=0;for(int y=0;y<stacks;y++)for(int x=0;x<slices;x++){int a=y*(slices+1)+x,c=a+slices+1;ix[k++]=a;ix[k++]=a+1;ix[k++]=c;ix[k++]=a+1;ix[k++]=c+1;ix[k++]=c;}return new Mesh(d,ix);}
+ public static Mesh plane(){float[] d={-5,0,-5,0,1,0,0,0, 5,0,-5,0,1,0,4,0, 5,0,5,0,1,0,4,4, -5,0,5,0,1,0,0,4};return new Mesh(d,new int[]{0,2,1,0,3,2});}
+}
